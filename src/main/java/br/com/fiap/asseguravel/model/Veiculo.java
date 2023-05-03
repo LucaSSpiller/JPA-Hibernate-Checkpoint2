@@ -9,7 +9,16 @@ import jakarta.persistence.*;
         @UniqueConstraint(name = "UK_NR_PLACA", columnNames = "NR_PLACA")
 })
 public class Veiculo {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_VEICULO")
+    @SequenceGenerator(
+            name = "SQ_VEICULO",
+            sequenceName = "SQ_VEICULO",
+            initialValue = 1,
+            allocationSize = 1
+    )
+    @Column(name = "ID_VEICULO")
+    private Long id;
     @Column(name = "NR_CHASSI")
     private String chassis;
     @Column(name = "NR_PLACA")
@@ -21,7 +30,7 @@ public class Veiculo {
     @Column(name = "NM_FABRICANTE")
     private String fabricante;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID_PESSOA",
         foreignKey = @ForeignKey(name = "FK_VEICULO_PROPRIETARIO", value = ConstraintMode.CONSTRAINT)
     )
@@ -30,7 +39,8 @@ public class Veiculo {
     public Veiculo() {
     }
 
-    public Veiculo(String chassis, String placa, String modelo, int anoDeFabricacao, String fabricante, Pessoa proprietario) {
+    public Veiculo(Long id, String chassis, String placa, String modelo, int anoDeFabricacao, String fabricante, Pessoa proprietario) {
+        this.id = id;
         this.chassis = chassis;
         this.placa = placa;
         this.modelo = modelo;
@@ -38,6 +48,7 @@ public class Veiculo {
         this.fabricante = fabricante;
         this.proprietario = proprietario;
     }
+
 
     public String getChassis() {
         return chassis;
@@ -92,5 +103,26 @@ public class Veiculo {
     public Veiculo setProprietario(Pessoa proprietario) {
         this.proprietario = proprietario;
         return this;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Veiculo setId(Long id) {
+        this.id = id;
+        return this;
+    }
+    @Override
+    public String toString() {
+        return "Veiculo{" +
+                "id=" + id +
+                ", chassis='" + chassis + '\'' +
+                ", placa='" + placa + '\'' +
+                ", modelo='" + modelo + '\'' +
+                ", anoDeFabricacao=" + anoDeFabricacao +
+                ", fabricante='" + fabricante + '\'' +
+                ", proprietario=" + proprietario +
+                '}';
     }
 }

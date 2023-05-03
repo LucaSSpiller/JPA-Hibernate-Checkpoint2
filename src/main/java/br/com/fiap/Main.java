@@ -24,6 +24,7 @@ public class Main {
         EntityManager manager = factory.createEntityManager();
 
 
+
         var bruno = new PessoaFisica();
         bruno.setCPF(geraCpf())
                 .setSexo(Sexo.MASCULINO)
@@ -71,11 +72,12 @@ public class Main {
                 .setCorretor(corretor)
                 .setInicioVigencia(LocalDate.now())
                 .setFimVigencia(LocalDate.now().plusYears(1));
+        sv.addBeneficiario(bruno);
 
         var imovel = new Imovel();
         imovel.setQtdBanheiros(3)
                 .setQtdQuartos(3)
-                .setIntQtdVagasDeGaragem(2)
+                .setQtdVagasDeGaragem(2)
                 .setNumeroRegistroNoCartorio(String.valueOf(new Random().nextLong(999999999)));
 
         var sr = new SeguroResidencial();
@@ -84,6 +86,7 @@ public class Main {
                 .setCorretor(corretor)
                 .setInicioVigencia(LocalDate.now())
                 .setFimVigencia(LocalDate.now().plusYears(1));
+        sr.addBeneficiario(bene);
 
         var svida = new SeguroVida();
         svida.setObjeto(esposa)
@@ -91,7 +94,7 @@ public class Main {
                 .setCorretor(corretor)
                 .setInicioVigencia(LocalDate.now())
                 .setFimVigencia(LocalDate.now().plusYears(1));
-
+        sv.addBeneficiario(bene);
 
         List<Seguro> seguros = Arrays.asList(svida, sv, sr);
 
@@ -102,11 +105,11 @@ public class Main {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                     """
-                                    Erro na persistência! 
-                                                
-                                    Confira se todas as classes estão anotadas corretamente!
-                                                
-                                    veja detalhes no console..."""
+                            Erro na persistência! 
+                                        
+                            Confira se todas as classes estão anotadas corretamente!
+                                        
+                            veja detalhes no console..."""
 
             );
             e.printStackTrace();
@@ -116,7 +119,8 @@ public class Main {
         //Métodos para consultar aqui:
 
         seguros.forEach(System.out::println);
-
+        findById(manager);
+        findAll(manager);
         manager.close();
         factory.close();
 
@@ -142,6 +146,18 @@ public class Main {
         var sorteio = new Random();
         var numero = sorteio.nextLong(999999999);
         return String.valueOf(numero);
+    }
+
+    public static void findById(EntityManager manager){
+       Long id = Long.valueOf(JOptionPane.showInputDialog("Id do Seguro: "));
+       Seguro seguro = manager.find(Seguro.class, id);
+       System.out.println(seguro);
+    }
+
+    public static void findAll(EntityManager manager){
+        String jpql = "From Seguro";
+        List<Seguro> resultList = manager.createQuery(jpql).getResultList();
+        resultList.stream().forEach(System.out::println);
     }
 
 }

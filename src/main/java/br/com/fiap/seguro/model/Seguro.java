@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,12 +29,12 @@ public abstract class Seguro {
     private LocalDate inicioVigencia;
     @Column(name = "DT_FIM_VIGENCIA")
     private LocalDate fimVigencia;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
-    @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID_PESSOA",
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "ID_CONTRATANTE", referencedColumnName = "ID_PESSOA",
             foreignKey = @ForeignKey(name = "FK_SEGURO_CONTRATANTE", value = ConstraintMode.CONSTRAINT)
     )
     private Pessoa contratante;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ID_CORRETOR", referencedColumnName = "ID_CORRETOR",
             foreignKey = @ForeignKey(name = "FK_SEGURO_CORRETOR", value = ConstraintMode.CONSTRAINT)
     )
@@ -44,7 +45,7 @@ public abstract class Seguro {
             joinColumns = {
                     @JoinColumn(
                             name = "ID_SEGURO",
-                            referencedColumnName = "ID_PESSOA",
+                            referencedColumnName = "ID_SEGURO",
                             foreignKey = @ForeignKey(name = "FK_SEGURO")
                     )
             },
@@ -142,4 +143,5 @@ public abstract class Seguro {
                 ", beneficiarios=" + beneficiarios +
                 '}';
     }
+
 }

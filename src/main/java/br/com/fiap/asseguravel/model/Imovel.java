@@ -10,16 +10,27 @@ import java.util.Set;
 @Entity
 @Table(name = "TB_IMOVEL", uniqueConstraints = {
         @UniqueConstraint(name = "UK_NR_REGISTRO", columnNames = "NR_REGISTRO_CART")
-
-})
+        }
+    )
 public class Imovel {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_IMOVEL")
+    @SequenceGenerator(
+            name = "SQ_IMOVEL",
+            sequenceName = "SQ_IMOVEL",
+            initialValue = 1,
+            allocationSize = 1
+    )
+    @Column(name = "ID_IMOVEL")
+    private Long id;
 
     @Column(name = "NR_QTD_QUARTO")
     private int qtdQuartos;
     @Column(name = "NR_QTD_BANHEIRO")
     private int qtdBanheiros;
     @Column(name = "QTD_VAGA_GARAGEM")
-    private int intQtdVagasDeGaragem;
+    private int qtdVagasDeGaragem;
     @Column(name = "NR_REGISTRO_CART")
     private String numeroRegistroNoCartorio;
 
@@ -29,7 +40,7 @@ public class Imovel {
             joinColumns = {
                     @JoinColumn(
                             name = "ID_IMOVEL",
-                            referencedColumnName = "ID_PESSOA",
+                            referencedColumnName = "ID_IMOVEL",
                             foreignKey = @ForeignKey(name = "FK_IMOVEL")
                     )
             },
@@ -47,11 +58,30 @@ public class Imovel {
     public Imovel() {
     }
 
-    public Imovel(int qtdQuartos, int qtdBanheiros, int intQtdVagasDeGaragem, String numeroRegistroNoCartorio) {
+    public Imovel(Long id, int qtdQuartos, int qtdBanheiros, int intQtdVagasDeGaragem, String numeroRegistroNoCartorio, Set<Pessoa> proprietarios) {
+        this.id = id;
         this.qtdQuartos = qtdQuartos;
         this.qtdBanheiros = qtdBanheiros;
-        this.intQtdVagasDeGaragem = intQtdVagasDeGaragem;
+        this.qtdVagasDeGaragem = qtdBanheiros;
         this.numeroRegistroNoCartorio = numeroRegistroNoCartorio;
+        this.proprietarios = proprietarios;
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public Imovel setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public int getQtdVagasDeGaragem() {
+        return qtdVagasDeGaragem;
+    }
+
+    public Imovel setQtdVagasDeGaragem(int qtdVagasDeGaragem) {
+        this.qtdVagasDeGaragem = qtdVagasDeGaragem;
+        return this;
     }
 
     public int getQtdQuartos() {
@@ -72,14 +102,6 @@ public class Imovel {
         return this;
     }
 
-    public int getIntQtdVagasDeGaragem() {
-        return intQtdVagasDeGaragem;
-    }
-
-    public Imovel setIntQtdVagasDeGaragem(int intQtdVagasDeGaragem) {
-        this.intQtdVagasDeGaragem = intQtdVagasDeGaragem;
-        return this;
-    }
 
     public String getNumeroRegistroNoCartorio() {
         return numeroRegistroNoCartorio;
@@ -107,13 +129,13 @@ public class Imovel {
         return this;
     }
 
-
     @Override
     public String toString() {
         return "Imovel{" +
-                "qtdQuartos=" + qtdQuartos +
+                "id=" + id +
+                ", qtdQuartos=" + qtdQuartos +
                 ", qtdBanheiros=" + qtdBanheiros +
-                ", intQtdVagasDeGaragem=" + intQtdVagasDeGaragem +
+                ", intQtdVagasDeGaragem=" + qtdVagasDeGaragem +
                 ", numeroRegistroNoCartorio='" + numeroRegistroNoCartorio + '\'' +
                 ", proprietarios=" + proprietarios +
                 '}';

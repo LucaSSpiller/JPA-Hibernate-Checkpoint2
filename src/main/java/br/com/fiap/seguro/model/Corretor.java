@@ -21,7 +21,7 @@ public class Corretor {
     private long id;
     @Column(name = "NR_SUSEP")
     private String numeroSUSEP;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID_PESSOA",
             foreignKey = @ForeignKey(name = "FK_CORRETOR_PESSOA", value = ConstraintMode.CONSTRAINT)
     )
